@@ -1,0 +1,19 @@
+@layer components {
+  .toc-container {
+    ul {
+      @apply list-none p-0 m-0;
+    }
+
+    li {
+      @apply mb-3 last:mb-0;
+    }
+
+    a {
+      @apply text-neutral-800 font-medium block no-underline;
+
+      &:hover {
+        @apply text-neutral-500;
+      }
+    }
+  }
+}

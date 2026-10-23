@@ -1,0 +1,31 @@
+---
+import { staticBlockMap, type StaticBlock } from "./map";
+
+type Props = {
+  blocks?: StaticBlock[];
+};
+
+const { blocks = [] } = Astro.props;
+
+for (const block of blocks) {
+  if (!(block.component in staticBlockMap)) {
+    console.warn(`Unknown static block skipped: ${block.component}`);
+  }
+}
+---
+
+{blocks.map((block) => {
+  const Component = staticBlockMap[block.component as keyof typeof staticBlockMap] as
+    (typeof staticBlockMap)[keyof typeof staticBlockMap] | undefined;
+
+  if (!Component) {
+    return null;
+  }
+
+  return (
+    <Component
+      title={String(block.title ?? "")}
+      summary={typeof block.summary === "string" ? block.summary : undefined}
+    />
+  );
+})}

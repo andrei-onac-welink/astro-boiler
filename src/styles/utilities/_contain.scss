@@ -1,0 +1,31 @@
+@utility contain-none {
+  contain: none;
+}
+
+@utility contain-content {
+  contain: content;
+}
+
+@utility contain-layout {
+  contain: layout;
+}
+
+@utility contain-paint {
+  contain: paint;
+}
+
+@utility contain-style {
+  contain: style;
+}
+
+@utility contain-size {
+  contain: size;
+}
+
+@utility contain-inline-size {
+  contain: inline-size;
+}
+
+@utility contain-strict {
+  contain: strict;
+}

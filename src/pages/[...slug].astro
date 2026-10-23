@@ -1,0 +1,63 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BlocksExternal from "../components/blocks-external/BlocksExternal.astro";
+import BlocksStatic from "../components/blocks-static/BlocksStatic.astro";
+import Base from "../layouts/Base.astro";
+
+export const prerender = true;
+
+type PageProps =
+  { source: "basic"; entry: CollectionEntry<"basicPage"> } | { source: "static"; entry: CollectionEntry<"staticPage"> };
+
+export async function getStaticPaths() {
+  const normalizeSlug = (value: string) => value.replace(/^\/+|\/+$/g, "");
+  const [basicPages, staticPages] = await Promise.all([getCollection("basicPage"), getCollection("staticPage")]);
+  const paths: Array<{ params: { slug: string }; props: PageProps }> = [
+    ...basicPages.map((entry) => ({
+      params: { slug: normalizeSlug(entry.data.slug) },
+      props: { source: "basic" as const, entry },
+    })),
+    ...staticPages.map((entry) => ({
+      params: { slug: normalizeSlug(entry.data.slug ?? entry.id) },
+      props: { source: "static" as const, entry },
+    })),
+  ];
+  const slugs = new Set<string>();
+
+  for (const path of paths) {
+    if (slugs.has(path.params.slug)) {
+      throw new Error(`Duplicate Basic Page or Static Page slug: ${path.params.slug}`);
+    }
+    slugs.add(path.params.slug);
+  }
+
+  return paths;
+}
+
+const props = Astro.props as PageProps;
+const description =
+  props.source === "basic" ? (props.entry.data.metaTags?.seo?.description ?? undefined) : props.entry.data.description;
+const staticContent = props.source === "static" ? await render(props.entry) : undefined;
+const Content = staticContent?.Content;
+---
+
+<Base description={description} title={props.entry.data.title}>
+  {props.source === "basic" && (
+    <>
+      {props.entry.data.blocks.length > 0 && <BlocksExternal blocks={props.entry.data.blocks} />}
+      {props.entry.data.blocks.length === 0 && (
+        <article class="markdown-content">
+          <h1 class="text-4xl font-semibold">{props.entry.data.title}</h1>
+          {props.entry.data.content && <p class="whitespace-pre-wrap">{props.entry.data.content}</p>}
+        </article>
+      )}
+    </>
+  )}
+  {props.source === "static" && props.entry.data.blocks && <BlocksStatic blocks={props.entry.data.blocks} />}
+  {props.source === "static" && !props.entry.data.blocks?.length && Content && (
+    <article class="markdown-content">
+      <h1 class="text-4xl font-semibold">{props.entry.data.title}</h1>
+      <Content />
+    </article>
+  )}
+</Base>

@@ -1,0 +1,23 @@
+@layer components {
+  @supports (color: contrast-color(red)) {
+    .contrast-color {
+      --_background-color: var(--bg-color, var(--color-primary-500));
+      background-color: var(--_background-color);
+
+      @media (prefers-contrast: more) {
+        color: contrast-color(var(--_background-color)) !important;
+      }
+    }
+  }
+
+  @supports not (color: contrast-color(red)) {
+    .contrast-color {
+      --_background-color: var(--bg-color, var(--color-primary-500));
+      background-color: var(--_background-color);
+
+      @media (prefers-contrast: more) {
+        color: lch(from var(--_background-color) calc((49.44 - l) * infinity) 0 0) !important;
+      }
+    }
+  }
+}

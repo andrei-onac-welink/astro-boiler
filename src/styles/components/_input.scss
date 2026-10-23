@@ -1,0 +1,17 @@
+@layer components {
+  .form-input {
+    @apply block w-full rounded-3xl bg-white px-5 py-3.5 text-base text-gray-900 border-1 border-purple-200 placeholder:text-gray-400 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent-500 [&:user-valid]:border-green-500 [&:user-invalid]:border-red-500 field-sizing-content appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+  }
+
+  .form-textarea {
+    @apply rounded-3xl resize-none field-sizing-content min-h-[16ch];
+  }
+
+  .form-checkbox {
+    @apply size-4 accent-primary-700 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent-500;
+  }
+
+  .form-radio {
+    @apply size-4 accent-primary-700 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-accent-500;
+  }
+}

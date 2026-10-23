@@ -1,0 +1,54 @@
+{
+  "name": "welink-astro-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Welink Astro 7 boilerplate for content sites on Cloudflare Workers",
+  "engines": {
+    "node": "24.19.0",
+    "npm": ">=11"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run check && astro build",
+    "build:develop": "APP_ENV=develop USE_CONTENT_FIXTURES=true astro build",
+    "build:preview": "CLOUDFLARE_ENV=preview APP_ENV=preview astro build",
+    "build:staging": "CLOUDFLARE_ENV=staging APP_ENV=staging astro build",
+    "build:production": "CLOUDFLARE_ENV=production APP_ENV=production astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "lint": "eslint . && stylelint \"src/**/*.{css,scss}\"",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "validate": "npm run format:check && npm run lint && npm run build",
+    "clean": "node scripts/clean.mjs",
+    "cf:typegen": "wrangler types",
+    "cf:dry-run": "npm run build && wrangler deploy --dry-run --config dist/server/wrangler.json",
+    "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
+    "deploy:preview": "npm run build:preview && wrangler versions upload --config dist/server/wrangler.json",
+    "deploy:staging": "npm run build:staging && wrangler deploy --config dist/server/wrangler.json",
+    "deploy:production": "npm run build:production && wrangler deploy --config dist/server/wrangler.json"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "14.4.2",
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.4.2",
+    "tailwindcss": "4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@eslint/js": "10.0.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "eslint": "10.13.0",
+    "eslint-plugin-astro": "3.2.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.1",
+    "sass": "1.106.1",
+    "stylelint": "17.16.0",
+    "stylelint-config-standard-scss": "17.0.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0",
+    "wrangler": "4.152.0"
+  }
+}

@@ -1,0 +1,15 @@
+---
+type Props = {
+  content: string;
+  contentHtml?: string;
+  published?: boolean;
+};
+
+const { content, contentHtml, published = true } = Astro.props;
+---
+
+{published && (
+  <article class="markdown-content">
+    {contentHtml ? <Fragment set:html={contentHtml} /> : <p class="whitespace-pre-wrap">{content}</p>}
+  </article>
+)}

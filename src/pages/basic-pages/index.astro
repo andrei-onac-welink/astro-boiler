@@ -1,0 +1,26 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+export const prerender = true;
+
+const basicPages = (await getCollection("basicPage"))
+  .filter((entry) => entry.data.strapiStatus === "published" || import.meta.env.DEV)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<Base title="Basic Pages">
+  <h1 class="text-4xl font-semibold">Basic Pages</h1>
+  <ul class="mt-8 grid gap-4">
+    {basicPages.map((entry) => (
+      <li>
+        <a
+          class="block rounded-2xl border border-slate-200 bg-white p-5 text-lg font-semibold"
+          href={`/${entry.data.slug}/`}
+        >
+          {entry.data.title}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

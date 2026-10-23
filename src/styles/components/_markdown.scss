@@ -1,0 +1,25 @@
+@layer components {
+  .markdown-content {
+    @apply font-sans *:font-sans text-base *:text-base *:mb-4 max-w-[80ch];
+
+    @apply *:[h1,h2,h3,h4,h5,h6]:font-semibold *:[h1,h2,h3,h4,h5,h6]:text-balance;
+    @apply *:[h1,h2]:text-2xl;
+    @apply *:[h3]:text-xl;
+    @apply *:[h4]:text-lg;
+    @apply *:[h5,h6]:text-base;
+
+    @apply *:[p]:text-pretty **:[p]:text-pretty;
+    @apply *:[b,strong]:font-bold **:[b,strong]:font-bold;
+
+    @apply *:[ul]:list-disc;
+    @apply *:[ol]:list-decimal;
+    @apply *:[ul,ol]:ps-8;
+    @apply *:[ul,ol]:mb-4 **:[ul,ol]:mb-4;
+    @apply **:[li]:mb-2;
+    @apply **:[li>ul]:list-[circle] **:[li>ul]:ps-8;
+
+    @apply *:[img]:rounded-lg **:[img]:rounded-lg;
+
+    @apply *:last:mb-0 empty:hidden;
+  }
+}

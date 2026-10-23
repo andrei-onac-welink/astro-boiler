@@ -1,0 +1,52 @@
+@layer base {
+  @apply selection:bg-accent-500 selection:text-white;
+
+  html {
+    @apply scrollbar-gutter-stable;
+  }
+
+  body {
+    @apply text-neutral-800 accent-accent-500 caret-accent-500;
+  }
+
+  :any-link,
+  summary {
+    @apply transition-colors duration-200 ease-in-out select-none outline-secondary-500 outline-hidden cursor-pointer;
+
+    &:focus-visible {
+      @apply outline-solid outline-offset-2 outline-2;
+    }
+  }
+
+  :any-link:not([class]) {
+    @apply text-secondary-500 underline underline-offset-2 outline-secondary-500;
+
+    &:focus-visible {
+      @apply outline-solid outline-offset-2 outline-2;
+    }
+  }
+
+  :where(input, button, textarea, select) {
+    @apply outline-secondary-500;
+
+    &:focus-visible {
+      @apply outline-solid outline-offset-2 outline-2;
+    }
+  }
+
+  li::marker {
+    @apply text-2xl text-primary-500;
+  }
+
+  :where(b, strong) {
+    @apply font-bold;
+  }
+
+  mark {
+    @apply bg-accent-500 text-white;
+  }
+
+  :target {
+    @apply scroll-my-[6ex];
+  }
+}

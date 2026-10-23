@@ -1,0 +1,15 @@
+@layer components {
+  body.status--unpublished,
+  .status--unpublished {
+    @apply before:top-0 before:start-0 before:bg-[#ffd230] before:[clip-path:polygon(0_0,_0_100%,_100%_0)] before:z-1000 before:pointer-events-none rtl:before:[clip-path:polygon(0_0,_100%_0,_100%_100%)];
+    @apply after:content-["Preview"] after:origin-center after:transform-[rotate(-45deg)] after:font-extrabold after:uppercase after:tracking-[0.06em] after:text-base after:text-black after:z-1100 after:pointer-events-none rtl:after:transform-[rotate(45deg)];
+  }
+
+  body.status--unpublished {
+    @apply before:fixed after:fixed before:size-25 lg:before:size-[8.75rem] after:top-7 after:start-0 lg:after:top-10 lg:after:start-2;
+  }
+
+  .status--unpublished {
+    @apply relative before:absolute after:absolute before:size-[6rem] after:top-[1.5rem] after:start-0.5;
+  }
+}

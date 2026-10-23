@@ -1,0 +1,8 @@
+@use "sass:meta";
+
+@layer vendor {
+  @include meta.load-css("swiper/swiper");
+  @include meta.load-css("swiper/modules/navigation");
+  @include meta.load-css("swiper/modules/pagination");
+  @include meta.load-css("swiper/modules/effect-fade");
+}

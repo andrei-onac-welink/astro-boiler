@@ -1,0 +1,40 @@
+---
+import BlocksExternal from "../components/blocks-external/BlocksExternal.astro";
+import Base from "../layouts/Base.astro";
+
+export const prerender = true;
+---
+
+<Base title="Welink Astro boilerplate">
+  <BlocksExternal
+    blocks={[
+      {
+        __component: "blocks.hero-banner",
+        heading: "A typed Astro foundation for Welink content sites",
+        summary:
+          "Static-first rendering, Strapi loaders, Cloudflare Workers, and familiar Hugo-inspired project conventions.",
+      },
+    ]}
+  />
+
+  <section class="mt-12 grid gap-6 md:grid-cols-3">
+    <article class="rounded-2xl bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Typed content</h2>
+      <p class="mt-2 text-slate-600">Zod schemas turn upstream CMS responses into explicit build contracts.</p>
+      <a class="mt-4 inline-block font-medium text-blue-700" href="/basic-pages/">
+        Basic Pages
+      </a>
+    </article>
+    <article class="rounded-2xl bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Static by default</h2>
+      <p class="mt-2 text-slate-600">Content pages are prerendered while selected routes run at the edge.</p>
+      <a class="mt-4 inline-block font-medium text-blue-700" href="/about/">
+        Example Static Page
+      </a>
+    </article>
+    <article class="rounded-2xl bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Operationally explicit</h2>
+      <p class="mt-2 text-slate-600">Named environments replace implicit branch-dependent build behavior.</p>
+    </article>
+  </section>
+</Base>

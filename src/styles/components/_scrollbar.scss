@@ -1,0 +1,163 @@
+@layer components {
+  @-moz-document url-prefix() {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-primary-500) transparent;
+    }
+
+    *:hover {
+      scrollbar-color: var(--color-primary-600) transparent;
+    }
+  }
+
+  *::-webkit-scrollbar {
+    @apply size-2.5;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-neutral-200 rounded-full mt-0;
+  }
+
+  *::-webkit-scrollbar-track:hover {
+    @apply bg-neutral-200;
+  }
+
+  *::-webkit-scrollbar-track:active {
+    @apply bg-neutral-200;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply bg-linear-to-b from-primary-500 to-primary-600 rounded-full;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-linear-to-b from-primary-500 to-primary-600;
+  }
+
+  *::-webkit-scrollbar-thumb:active {
+    @apply bg-linear-to-b from-primary-500 to-primary-600;
+  }
+
+  .scrollbar-neutral {
+    @-moz-document url-prefix() {
+      & {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-neutral-400) transparent;
+      }
+
+      &:hover {
+        scrollbar-color: var(--color-primary-500) transparent;
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-neutral-200 my-0;
+    }
+
+    &::-webkit-scrollbar-track:hover {
+      @apply bg-neutral-200;
+    }
+
+    &::-webkit-scrollbar-track:active {
+      @apply bg-neutral-200;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-none bg-neutral-400 rounded-xs;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      @apply bg-none bg-neutral-500;
+    }
+
+    &::-webkit-scrollbar-thumb:active {
+      @apply bg-none bg-neutral-500;
+    }
+  }
+
+  .scrollbar-dark {
+    @-moz-document url-prefix() {
+      & {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-neutral-800) transparent;
+      }
+
+      &:hover {
+        scrollbar-color: var(--color-neutral-700) transparent;
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-neutral-800 my-0;
+    }
+
+    &::-webkit-scrollbar-track:hover {
+      @apply bg-neutral-800;
+    }
+
+    &::-webkit-scrollbar-track:active {
+      @apply bg-neutral-800;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-none bg-neutral-600 rounded-xs;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      @apply bg-none bg-neutral-500;
+    }
+
+    &::-webkit-scrollbar-thumb:active {
+      @apply bg-none bg-neutral-500;
+    }
+  }
+
+  .scrollbar-dark--thumb {
+    @-moz-document url-prefix() {
+      & {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-neutral-800) transparent;
+      }
+
+      &:hover {
+        scrollbar-color: var(--color-neutral-700) transparent;
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-transparent my-0;
+    }
+
+    &::-webkit-scrollbar-track:hover {
+      @apply bg-transparent;
+    }
+
+    &::-webkit-scrollbar-track:active {
+      @apply bg-transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-none bg-neutral-600 rounded-xs;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      @apply bg-none bg-neutral-500;
+    }
+
+    &::-webkit-scrollbar-thumb:active {
+      @apply bg-none bg-neutral-500;
+    }
+  }
+
+  .scrollbar-sm {
+    &::-webkit-scrollbar {
+      @apply size-1.5;
+    }
+  }
+
+  .scrollbar-xs {
+    &::-webkit-scrollbar {
+      @apply size-1;
+    }
+  }
+}

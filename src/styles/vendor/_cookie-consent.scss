@@ -1,0 +1,61 @@
+@use "sass:meta";
+
+@layer vendor {
+  @include meta.load-css("vanilla-cookieconsent/dist/css-components/base.css");
+  @include meta.load-css("vanilla-cookieconsent/dist/css-components/consent-modal.css");
+  @include meta.load-css("vanilla-cookieconsent/dist/css-components/preferences-modal.css");
+
+  :root {
+    --cc-bg: var(--color-gray-700, #f9faff);
+    --cc-primary-color: var(--color-white, #112954);
+    --cc-secondary-color: var(--color-white, #112954);
+
+    --cc-btn-primary-bg: var(--color-accent-500, #3859d0);
+    --cc-btn-primary-color: var(--color-white, #f9faff);
+    --cc-btn-primary-border-color: var(--cc-btn-primary-bg);
+    --cc-btn-primary-hover-bg: var(--color-accent-700, #213657);
+    --cc-btn-primary-hover-color: var(--cc-btn-primary-color, #fff);
+    --cc-btn-primary-hover-border-color: var(--cc-btn-primary-hover-bg);
+
+    --cc-btn-secondary-bg: var(--color-gray-900, #dfe7f9);
+    --cc-btn-secondary-color: var(--cc-primary-color, #dfe7f9);
+    --cc-btn-secondary-border-color: var(--cc-btn-secondary-bg);
+    --cc-btn-secondary-hover-bg: var(--color-primary-700, #c6d1ea);
+    --cc-btn-secondary-hover-color: var(--cc-btn-secondary-color, #000);
+    --cc-btn-secondary-hover-border-color: var(--cc-btn-secondary-hover-bg);
+
+    --cc-btn-border-radius: 0;
+    --cc-link-color: var(--color-white, #fff);
+
+    --cc-separator-border-color: #f0f4f7;
+
+    --cc-toggle-on-bg: var(--cc-btn-primary-bg);
+    --cc-toggle-off-bg: #667481;
+    --cc-toggle-on-knob-bg: #ffffff;
+    --cc-toggle-off-knob-bg: var(--cc-toggle-on-knob-bg);
+
+    --cc-toggle-enabled-icon-color: var(--cc-bg); // yes (v tick)
+    --cc-toggle-disabled-icon-color: var(--cc-bg); // no (x tick)
+
+    --cc-toggle-readonly-bg: var(--cc-btn-secondary-bg, #d5dee2);
+    --cc-toggle-readonly-knob-bg: var(--color-white);
+    --cc-toggle-readonly-knob-icon-color: var(--cc-toggle-readonly-bg);
+
+    --cc-section-category-border: var(--cc-cookie-category-block-bg);
+
+    --cc-cookie-category-block-bg: var(--color-gray-400, #f0f4f7);
+    --cc-cookie-category-block-border: var(--cc-cookie-category-block-bg, #ebeff9);
+    --cc-cookie-category-block-hover-bg: var(--cc-btn-primary-bg, #e9eff4);
+    --cc-cookie-category-block-hover-border: var(--cc-btn-primary-bg, #e9eff4);
+    --cc-cookie-category-expanded-block-bg: transparent;
+    --cc-cookie-category-expanded-block-hover-bg: #dee4e9;
+
+    --cc-overlay-bg: rgba(17, 17, 17, 0.4);
+    --cc-webkit-scrollbar-bg: var(--cc-section-category-border);
+    --cc-webkit-scrollbar-hover-bg: var(--cc-btn-primary-hover-bg);
+
+    --cc-footer-bg: var(--cc-btn-secondary-bg);
+    --cc-footer-color: var(--cc-secondary-color);
+    --cc-footer-border-color: #e4eaed;
+  }
+}

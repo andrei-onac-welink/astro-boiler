@@ -1,0 +1,30 @@
+---
+type Props = {
+  description?: string;
+  image?: string;
+  robots?: string;
+  title: string;
+};
+
+const { description = "Welink Astro content-site boilerplate", image, robots = "index, follow", title } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const documentTitle = title.includes("Welink") ? title : `${title} | Welink`;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<link rel="canonical" href={canonical} />
+<title>{documentTitle}</title>
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={documentTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{image && <meta property="og:image" content={image} />}
+
+<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={documentTitle} />
+<meta name="twitter:description" content={description} />
+{image && <meta name="twitter:image" content={image} />}

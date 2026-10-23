@@ -1,0 +1,13 @@
+---
+type Props = {
+  heading: string;
+  summary?: string;
+};
+
+const { heading, summary } = Astro.props;
+---
+
+<section class="rounded-3xl bg-slate-900 px-8 py-16 text-white">
+  <h1 class="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">{heading}</h1>
+  {summary && <p class="mt-6 max-w-2xl text-lg text-slate-300">{summary}</p>}
+</section>

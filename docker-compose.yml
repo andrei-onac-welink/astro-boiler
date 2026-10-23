@@ -1,0 +1,55 @@
+name: ${PROJECT_NAMESPACE}
+
+services:
+  astro:
+    build:
+      dockerfile: ./docker/services/astro/Dockerfile
+    container_name: ${PROJECT_NAMESPACE}-astro
+    volumes:
+      - ./:/work
+      - node-modules:/work/node_modules
+      - npm-cache:/npm-cache
+    environment:
+      APP_ENV: develop
+      DEBUG: ${ASTRO_DEBUG:-astro:content,astro:build,astro:assets}
+      DEV_PROXY: "1"
+      NPM_CONFIG_CACHE: /npm-cache
+      SITE_URL: https://${PROJECT_NAMESPACE}-astro.localhost
+      USE_CONTENT_FIXTURES: ${USE_CONTENT_FIXTURES:-true}
+    command: >
+      sh -c "
+        if [ ! -f package.json ]; then
+          echo 'No package.json found. Please check if you are in the correct directory.'
+          exit 1
+        fi
+        if [ ! -f node_modules/.package-lock.json ]; then
+          echo 'Installing dependencies...'
+          npm ci --no-audit --no-fund
+        else
+          echo 'Checking dependencies...'
+          npm install --no-audit --no-fund
+        fi
+        echo 'Running Astro dev server...'
+        echo 'Web server is available at https://${PROJECT_NAMESPACE}-astro.localhost/'
+        echo 'Debug scopes: ${ASTRO_DEBUG:-astro:content,astro:build,astro:assets}'
+        npm run dev -- --host 0.0.0.0 --ignore-lock --timings --verbose
+      "
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAMESPACE}-astro.rule=Host(`${PROJECT_NAMESPACE}-astro.localhost`)"
+      - "traefik.http.routers.${PROJECT_NAMESPACE}-astro.entrypoints=websecure"
+      - "traefik.http.routers.${PROJECT_NAMESPACE}-astro.tls=true"
+      - "traefik.http.services.${PROJECT_NAMESPACE}-astro.loadbalancer.server.port=4321"
+      - "traefik.docker.network=traefik-proxy"
+    networks:
+      - local
+      - traefik-proxy
+
+volumes:
+  node-modules:
+  npm-cache:
+
+networks:
+  local:
+  traefik-proxy:
+    external: true

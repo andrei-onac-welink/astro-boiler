@@ -1,0 +1,36 @@
+---
+import Footer from "../components/blocks/Footer.astro";
+import Header from "../components/blocks/Header.astro";
+import Head from "../components/misc/Head.astro";
+import "../styles/main.scss";
+
+type Props = {
+  description?: string;
+  image?: string;
+  robots?: string;
+  title: string;
+};
+
+const { description, image, robots, title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" style="color-scheme: light;">
+  <head>
+    <Head description={description} image={image} robots={robots} title={title} />
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-950 antialiased">
+    <div class="flex min-h-screen flex-col">
+      <slot name="header">
+        <Header />
+      </slot>
+      <main class="container flex-1 py-10">
+        <slot />
+      </main>
+      <slot name="footer">
+        <Footer />
+      </slot>
+    </div>
+  </body>
+</html>

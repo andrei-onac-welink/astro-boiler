@@ -1,0 +1,61 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "welink-astro-boilerplate-develop",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-10-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "vars": {
+    "APP_ENV": "develop",
+    "USE_CONTENT_FIXTURES": "true",
+  },
+  "env": {
+    "preview": {
+      "name": "welink-astro-boilerplate-preview",
+      "workers_dev": true,
+      "preview_urls": true,
+      "assets": {
+        "binding": "ASSETS",
+        "directory": "./dist",
+      },
+      "vars": {
+        "APP_ENV": "preview",
+        "USE_CONTENT_FIXTURES": "false",
+      },
+    },
+    "staging": {
+      "name": "welink-astro-boilerplate-staging",
+      "workers_dev": true,
+      "preview_urls": true,
+      "assets": {
+        "binding": "ASSETS",
+        "directory": "./dist",
+      },
+      "vars": {
+        "APP_ENV": "staging",
+        "USE_CONTENT_FIXTURES": "false",
+      },
+    },
+    "production": {
+      "name": "welink-astro-boilerplate",
+      "workers_dev": true,
+      "preview_urls": true,
+      "assets": {
+        "binding": "ASSETS",
+        "directory": "./dist",
+      },
+      "vars": {
+        "APP_ENV": "production",
+        "USE_CONTENT_FIXTURES": "false",
+      },
+    },
+  },
+}

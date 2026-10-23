@@ -1,0 +1,174 @@
+@layer base {
+  :root {
+    @apply scheme-light-dark;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      interpolate-size: allow-keywords;
+    }
+
+    @view-transition {
+      navigation: auto;
+    }
+  }
+
+  *,
+  *::before,
+  *::after {
+    @apply bg-cover bg-no-repeat align-[inherit];
+    text-decoration: inherit;
+  }
+
+  * {
+    @apply m-0 p-0;
+    font: inherit;
+  }
+
+  html {
+    @apply cursor-default;
+    hanging-punctuation: first last;
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    overflow-wrap: anywhere;
+    tab-size: 2;
+
+    &:focus-within {
+      @apply scroll-smooth;
+    }
+  }
+
+  body {
+    @apply flex flex-col min-h-svh overflow-x-hidden antialiased scroll-smooth bg-white;
+    text-rendering: optimizeSpeed;
+  }
+
+  del {
+    @apply line-through;
+  }
+
+  :where(em, q, cite) {
+    @apply italic;
+  }
+
+  :where(ul[class], ol[class]) {
+    @apply list-none ps-0 my-0;
+  }
+
+  :where(canvas, embed, object, video) {
+    @apply block w-full;
+  }
+
+  :where(img, img:not([draggable]), picture, svg, video, canvas) {
+    @apply h-auto max-w-full bg-cover bg-no-repeat align-middle italic select-none;
+  }
+
+  :where(svg:not([fill])) {
+    @apply fill-current;
+  }
+
+  :where(text:not([fill])) {
+    @apply text-current;
+  }
+
+  :where(text) {
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  :where(iframe, object) {
+    @apply scheme-light w-full border-0;
+  }
+
+  :where([aria-hidden="false"]) {
+    display: initial;
+  }
+
+  :where([hidden]) {
+    @apply hidden;
+  }
+
+  :where(table) {
+    @apply w-full border-collapse border-spacing-0;
+  }
+
+  :where(input, button, textarea, select) {
+    @apply min-w-px;
+    font: inherit;
+  }
+
+  :where(button) {
+    @apply cursor-pointer select-none;
+  }
+
+  :where(textarea) {
+    @apply resize-y;
+  }
+
+  :where(textarea:not([rows])) {
+    @apply min-h-[16ch];
+  }
+
+  :where(textarea) {
+    @apply w-full field-sizing-content min-h-[16ch];
+  }
+
+  :where(:any-link, area, button, input, label, select, summary, textarea, [tabindex]) {
+    @apply touch-manipulation;
+  }
+
+  :where(:any-link, button, ::file-selector-button) {
+    @apply w-fit touch-manipulation select-none;
+  }
+
+  :where(:any-link, button, img) {
+    @apply select-none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+  }
+
+  :where(:any-link, area, button, select, summary) {
+    @apply cursor-pointer;
+  }
+
+  :where([aria-controls]) {
+    @apply cursor-pointer;
+  }
+
+  :where([aria-disabled="true"], [disabled]) {
+    @apply cursor-not-allowed;
+  }
+
+  details[open]::details-content {
+    @apply contents;
+  }
+
+  summary {
+    @apply list-none;
+  }
+
+  summary::-webkit-details-marker {
+    @apply hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (update: slow) {
+  html {
+    &:focus-within {
+      @apply scroll-auto;
+    }
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
+  }
+}

@@ -1,0 +1,12 @@
+@layer components {
+  .nested-radius-outer {
+    --outer-radius: var(--nested-outer-radius, 30px);
+    --padding: var(--nested-padding, 10px);
+    --inner-radius: calc(var(--outer-radius) - var(--padding));
+    border-radius: var(--outer-radius);
+  }
+
+  .nested-radius-inner {
+    border-radius: var(--inner-radius);
+  }
+}

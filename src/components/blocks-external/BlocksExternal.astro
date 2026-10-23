@@ -1,0 +1,27 @@
+---
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import { blockMap, type ExternalBlock } from "./map";
+
+type Props = {
+  blocks?: ExternalBlock[];
+};
+
+const { blocks = [] } = Astro.props;
+
+for (const block of blocks) {
+  if (!(block.__component in blockMap)) {
+    console.warn(`Unknown external block skipped: ${block.__component}`);
+  }
+}
+---
+
+{blocks.map((block) => {
+  const Component = blockMap[block.__component as keyof typeof blockMap] as AstroComponentFactory | undefined;
+
+  if (!Component) {
+    return null;
+  }
+
+  const componentProps: Record<string, unknown> = block;
+  return <Component {...componentProps} />;
+})}

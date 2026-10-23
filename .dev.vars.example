@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local Wrangler/Astro preview only.
+APP_ENV=develop
+USE_CONTENT_FIXTURES=true
