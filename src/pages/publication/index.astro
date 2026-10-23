@@ -1,0 +1,56 @@
+---
+import { getCollection, getLiveCollection } from "astro:content";
+import CorePublicationTeaser from "@components/view-mode/core-publication/Teaser.astro";
+import ViewMode from "@components/view-mode/ViewMode.astro";
+import { config } from "@config/index.ts";
+import Base from "@layouts/Base.astro";
+
+export const prerender = false;
+
+const publications = (await getCollection("publication")).filter(
+  (entry) => entry.data.strapiStatus === "published" || config.includeDrafts,
+);
+const strapiPublicationUuids = new Set(
+  publications.flatMap((entry) => (entry.data.uuid ? [entry.data.uuid.toLowerCase()] : [])),
+);
+const { entries: coreEntries = [], error: coreError } = await getLiveCollection("core-publication-feed");
+const corePublications = coreEntries
+  .filter((entry) => !strapiPublicationUuids.has(entry.data.uuid.toLowerCase()))
+  .map((entry) => entry.data);
+
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=300");
+---
+
+<Base title="Publications">
+  <h1 class="text-4xl font-semibold">Publications</h1>
+
+  <section class="mt-10" aria-labelledby="strapi-publications-title">
+    <h2 class="text-2xl font-semibold" id="strapi-publications-title">
+      Strapi publications
+    </h2>
+    <div class="mt-6 grid gap-6 md:grid-cols-2">
+      {publications.map((entry) => (
+        <ViewMode entry={entry} mode="teaser" />
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-14" aria-labelledby="core-publications-title">
+    <h2 class="text-2xl font-semibold" id="core-publications-title">
+      LT Core publications
+    </h2>
+    {coreError ? (
+      <p class="mt-4 text-slate-600" role="status">
+        LT Core publications are temporarily unavailable.
+      </p>
+    ) : corePublications.length ? (
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        {corePublications.map((publication) => (
+          <CorePublicationTeaser publication={publication} />
+        ))}
+      </div>
+    ) : (
+      <p class="mt-4 text-slate-600">There are no additional LT Core publications.</p>
+    )}
+  </section>
+</Base>

@@ -1,23 +1,24 @@
 ---
-import Footer from "../components/blocks/Footer.astro";
-import Header from "../components/blocks/Header.astro";
-import Head from "../components/misc/Head.astro";
-import "../styles/main.scss";
+import Footer from "@components/blocks/Footer.astro";
+import Header from "@components/blocks/Header.astro";
+import Head from "@components/misc/Head.astro";
+import "@styles/main.scss";
 
 type Props = {
+  canonical?: string;
   description?: string;
   image?: string;
   robots?: string;
   title: string;
 };
 
-const { description, image, robots, title } = Astro.props;
+const { canonical, description, image, robots, title } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" style="color-scheme: light;">
   <head>
-    <Head description={description} image={image} robots={robots} title={title} />
+    <Head canonical={canonical} description={description} image={image} robots={robots} title={title} />
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-slate-50 font-sans text-slate-950 antialiased">

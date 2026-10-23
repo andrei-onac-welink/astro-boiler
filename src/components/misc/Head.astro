@@ -1,13 +1,20 @@
 ---
 type Props = {
+  canonical?: string;
   description?: string;
   image?: string;
   robots?: string;
   title: string;
 };
 
-const { description = "Welink Astro content-site boilerplate", image, robots = "index, follow", title } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const {
+  canonical: canonicalPath = Astro.url.pathname,
+  description = "Welink Astro content-site boilerplate",
+  image,
+  robots = "index, follow",
+  title,
+} = Astro.props;
+const canonical = new URL(canonicalPath, Astro.site ?? Astro.url);
 const documentTitle = title.includes("Welink") ? title : `${title} | Welink`;
 ---
 

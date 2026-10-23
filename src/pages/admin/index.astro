@@ -1,0 +1,32 @@
+---
+import Base from "@layouts/Base.astro";
+import { getAuthSession } from "@lib/auth.ts";
+import { getDatabase } from "@lib/database.ts";
+
+const session = await getAuthSession(Astro.request);
+if (!session) return Astro.redirect("/login/?returnTo=/admin/");
+if (session.user.role !== "admin") return new Response("Forbidden", { status: 403 });
+
+const totals = await getDatabase()
+  .prepare(
+    'SELECT (SELECT COUNT(*) FROM "user") AS users, ((SELECT COUNT(*) FROM "publication_favorite") + (SELECT COUNT(*) FROM "publication_plus_favorite")) AS favorites',
+  )
+  .first<{ users: number; favorites: number }>();
+---
+
+<Base title="Administration">
+  <div class="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
+    <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">Admin only</p>
+    <h1 class="mt-2 text-3xl font-semibold">Administration</h1>
+    <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl bg-slate-100 p-5">
+        <dt class="text-sm font-medium text-slate-500">Users</dt>
+        <dd class="mt-1 text-3xl font-semibold">{totals?.users ?? 0}</dd>
+      </div>
+      <div class="rounded-xl bg-slate-100 p-5">
+        <dt class="text-sm font-medium text-slate-500">Favorites</dt>
+        <dd class="mt-1 text-3xl font-semibold">{totals?.favorites ?? 0}</dd>
+      </div>
+    </dl>
+  </div>
+</Base>

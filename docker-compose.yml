@@ -15,7 +15,6 @@ services:
       DEV_PROXY: "1"
       NPM_CONFIG_CACHE: /npm-cache
       SITE_URL: https://${PROJECT_NAMESPACE}-astro.localhost
-      USE_CONTENT_FIXTURES: ${USE_CONTENT_FIXTURES:-true}
     command: >
       sh -c "
         if [ ! -f package.json ]; then
@@ -29,10 +28,12 @@ services:
           echo 'Checking dependencies...'
           npm install --no-audit --no-fund
         fi
+        echo 'Applying local D1 migrations...'
+        npm run db:migrate:local
         echo 'Running Astro dev server...'
         echo 'Web server is available at https://${PROJECT_NAMESPACE}-astro.localhost/'
         echo 'Debug scopes: ${ASTRO_DEBUG:-astro:content,astro:build,astro:assets}'
-        npm run dev -- --host 0.0.0.0 --ignore-lock --timings --verbose
+        npm run dev -- --host 0.0.0.0 --ignore-lock --timings
       "
     labels:
       - "traefik.enable=true"

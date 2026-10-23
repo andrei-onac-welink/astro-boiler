@@ -1,0 +1,102 @@
+---
+import type { PlayerConfig } from "@latest-thinking/lt-player";
+import { getLiveEntry } from "astro:content";
+import PublicationPlayer from "@components/PublicationPlayer.astro";
+import Base from "@layouts/Base.astro";
+
+export const prerender = false;
+
+const isFallbackRequest = Astro.request.headers.get("x-lt-core-publication-fallback") === "1";
+if (!isFallbackRequest) {
+  return Astro.rewrite("/404/");
+}
+
+const uuid = Astro.params.uuid;
+if (!uuid) return Astro.rewrite("/404/");
+
+const { entry, error } = await getLiveEntry("core-publication", uuid);
+if (error) return Astro.rewrite("/503/");
+if (!entry) return Astro.rewrite("/404/");
+
+const { publication } = entry.data;
+const canonicalPath = `/publication/${publication.uuid}/`;
+const canonicalUrl = new URL(canonicalPath, Astro.url.origin).toString();
+const player = structuredClone(entry.data.player) as PlayerConfig;
+const existingShare =
+  player.capabilities?.share && typeof player.capabilities.share === "object" ? player.capabilities.share : {};
+player.capabilities = {
+  ...player.capabilities,
+  share: {
+    ...existingShare,
+    canonicalUrl,
+  },
+};
+
+const publishedAt = publication.publishedAt ? new Date(publication.publishedAt) : null;
+const publishedLabel =
+  publishedAt && !Number.isNaN(publishedAt.getTime())
+    ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(
+        publishedAt,
+      )
+    : null;
+
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=300");
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+---
+
+<Base canonical={canonicalPath} robots="noindex, nofollow" title={publication.title}>
+  <article class="grid items-start gap-8 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)]">
+    <div class="aspect-[9/16] min-h-0 overflow-hidden rounded-2xl bg-black shadow-sm">
+      <PublicationPlayer config={player} />
+    </div>
+
+    <div class="rounded-2xl bg-white p-7 shadow-sm">
+      <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">Publication</p>
+      <h1 class="mt-2 text-4xl font-semibold">{publication.title}</h1>
+
+      <div class="mt-6 flex items-center gap-4">
+        {publication.researcher.avatarUrl ? (
+          <img
+            alt={`Profile picture of ${publication.researcher.displayName}`}
+            class="size-16 rounded-full object-cover"
+            height="64"
+            loading="lazy"
+            src={publication.researcher.avatarUrl}
+            width="64"
+          />
+        ) : (
+          <div class="flex size-16 items-center justify-center rounded-full bg-slate-100 text-xl font-semibold text-slate-500">
+            {publication.researcher.displayName.slice(0, 1)}
+          </div>
+        )}
+        <div>
+          <p class="text-lg font-semibold">{publication.researcher.displayName}</p>
+          {publication.researcher.institution && (
+            <p class="mt-1 text-slate-600">{publication.researcher.institution}</p>
+          )}
+        </div>
+      </div>
+
+      <dl class="mt-7 grid grid-cols-[auto_1fr] gap-x-5 gap-y-3 border-y border-slate-200 py-5">
+        {publishedLabel && (
+          <>
+            <dt class="text-slate-600">Published</dt>
+            <dd>
+              <time datetime={publishedAt!.toISOString().slice(0, 10)}>{publishedLabel}</time>
+            </dd>
+          </>
+        )}
+        <dt class="text-slate-600">License</dt>
+        <dd>
+          <a class="font-medium text-blue-700 underline" href={publication.license.url} rel="license">
+            {publication.license.label}
+          </a>
+        </dd>
+      </dl>
+
+      <a class="mt-7 inline-block font-medium text-blue-700" href="/publication/">
+        More publications
+      </a>
+    </div>
+  </article>
+</Base>

@@ -25,6 +25,18 @@ export function withQuery(path: string, values: Record<string, string | number>)
   return `${url.pathname}${url.search}`;
 }
 
+export function strapiQuery(path: string, parameters: string[]): string {
+  const url = new URL(path, "https://query.invalid");
+  for (const parameter of parameters) {
+    const separator = parameter.indexOf("=");
+    if (separator === -1) {
+      throw new Error(`Invalid Strapi query parameter: ${parameter}`);
+    }
+    url.searchParams.append(parameter.slice(0, separator), parameter.slice(separator + 1));
+  }
+  return `${url.pathname}${url.search}`;
+}
+
 export async function digest(value: unknown): Promise<string> {
   const bytes = new TextEncoder().encode(JSON.stringify(value));
   const result = await crypto.subtle.digest("SHA-256", bytes);
@@ -65,7 +77,8 @@ async function fetchStatus<T extends StrapiRecord>(
     });
 
     if (!response.ok) {
-      throw new Error(`Strapi request failed (${response.status}) for ${url.pathname}`);
+      const detail = (await response.text()).slice(0, 500);
+      throw new Error(`Strapi request failed (${response.status}) for ${url.pathname}${detail ? `: ${detail}` : ""}`);
     }
 
     const payload = (await response.json()) as StrapiResponse<T>;
@@ -99,12 +112,15 @@ export async function fetchAll<T extends StrapiRecord>(options: FetchCollectionO
   return deduplicateByDocumentId(batches.flat());
 }
 
-export function fingerprintPath(endpoint: string): string {
+export function fingerprintPath(endpoint: string, mediaField?: string): string {
   const url = new URL(endpoint, "https://query.invalid");
   url.search = "";
   url.searchParams.set("fields[0]", "documentId");
   url.searchParams.set("fields[1]", "updatedAt");
   url.searchParams.set("fields[2]", "publishedAt");
+  if (mediaField) {
+    url.searchParams.set(`populate[${mediaField}][fields][0]`, "url");
+  }
   url.searchParams.set("sort[0]", "documentId:asc");
   return `${url.pathname}${url.search}`;
 }

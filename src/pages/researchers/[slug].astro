@@ -1,0 +1,66 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntries } from "astro:content";
+import ViewMode from "@components/view-mode/ViewMode.astro";
+import Base from "@layouts/Base.astro";
+import { resolveStrapiMediaUrl } from "@lib/strapi-media.ts";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const researchers = await getCollection("researcher");
+  return researchers.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const publications = await getEntries(entry.data.publication);
+const publicationPlusEntries = await getEntries(entry.data.publicationPlus);
+const profilePicture = entry.data.profilePicture;
+const profilePictureUrl = profilePicture
+  ? await resolveStrapiMediaUrl({
+      documentId: entry.data.documentId,
+      endpoint: "/api/researchers",
+      field: "profilePicture",
+      media: profilePicture,
+      status: entry.data.strapiStatus,
+    })
+  : undefined;
+---
+
+<Base description={entry.data.bio} title={entry.data.displayName}>
+  <div class="grid gap-8 md:grid-cols-[minmax(0,2fr)_minmax(16rem,1fr)] md:items-start">
+    <div>
+      <h1 class="text-4xl font-semibold">{entry.data.displayName}</h1>
+      {entry.data.bio && <p class="mt-4 max-w-3xl text-lg">{entry.data.bio}</p>}
+    </div>
+
+    {profilePicture && profilePictureUrl && (
+      <Image
+        alt={profilePicture.alternativeText ?? entry.data.displayName}
+        class="aspect-square w-full rounded-2xl object-cover"
+        height={640}
+        sizes="(min-width: 1536px) 26rem, (min-width: 768px) 33vw, calc(100vw - 1rem)"
+        src={profilePictureUrl}
+        width={640}
+        widths={[320, 480, 640]}
+      />
+    )}
+  </div>
+
+  <h2 class="mt-10 text-2xl font-semibold">Publications</h2>
+  <div class="mt-5 grid gap-6 md:grid-cols-2">
+    {publications.map((publication) => (
+      <ViewMode entry={publication} mode="teaser" />
+    ))}
+  </div>
+
+  <h2 class="mt-10 text-2xl font-semibold">Publication Plus</h2>
+  <div class="mt-5 grid gap-6 md:grid-cols-2">
+    {publicationPlusEntries.map((publicationPlus) => (
+      <ViewMode entry={publicationPlus} mode="teaser" />
+    ))}
+  </div>
+</Base>

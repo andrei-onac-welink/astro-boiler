@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install up build restart stop down check validate
+.PHONY: help install up build restart stop down db-migrate db-promote check validate
 
 ifneq (,$(wildcard .env))
 include .env
@@ -37,6 +37,15 @@ stop: ## Stop containers without removing them
 
 down: ## Stop and remove containers
 	@$(DOCKER_COMPOSE) down
+
+##@ Local database
+
+db-migrate: ## Apply migrations to the local D1 database
+	@$(DOCKER_COMPOSE) run --rm astro npm run db:migrate:local
+
+db-promote: ## Promote EMAIL to admin in local D1
+	@test -n "$(EMAIL)" || (echo "Usage: make db-promote EMAIL=user@example.com" && exit 1)
+	@$(DOCKER_COMPOSE) run --rm astro npm run db:promote:local -- "$(EMAIL)"
 
 ##@ Validation
 

@@ -1,0 +1,17 @@
+<button class="rounded-full border border-slate-400 px-4 py-2 text-sm font-semibold" data-sign-out type="button">
+  Log out
+</button>
+
+<script>
+  document.querySelector<HTMLButtonElement>("[data-sign-out]")?.addEventListener("click", async (event) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    button.disabled = true;
+    await fetch("/api/auth/sign-out/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
+    window.location.href = "/";
+  });
+</script>

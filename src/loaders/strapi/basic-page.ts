@@ -1,4 +1,3 @@
-import { basicPageFixtures } from "./fixtures";
 import { strapiLoader } from "./loader";
 import type { StrapiRecord } from "./types";
 
@@ -60,7 +59,6 @@ export function basicPageLoader() {
     name: "strapi-basic-page",
     path: "/api/basic-pages?pLevel=6",
     version: "1",
-    fixtures: basicPageFixtures as BasicPageRecord[],
     mapEntry: mapBasicPage,
   });
 }

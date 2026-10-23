@@ -1,3 +1,7 @@
-# Copy to .dev.vars for local Wrangler/Astro preview only.
+# Copy to .dev.vars for local Wrangler/Astro development only.
 APP_ENV=develop
-USE_CONTENT_FIXTURES=true
+# Content source selection belongs in .env (see .env.example).
+BETTER_AUTH_SECRET=development-only-secret-change-me-1234567890
+# Runtime LT Core fallback for simple publications that are not available in Strapi.
+CORE_API_URL=https://core.stg.lt.org/api/v1
+CORE_API_TOKEN=

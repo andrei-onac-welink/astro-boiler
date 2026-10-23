@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PublicationTeaser from "./publication/Teaser.astro";
+import PublicationPlusTeaser from "./publication-plus/Teaser.astro";
+
+type Props = {
+  entry: CollectionEntry<"publication"> | CollectionEntry<"publication-plus">;
+  mode: "teaser";
+};
+
+const { entry, mode } = Astro.props;
+if (mode !== "teaser") {
+  throw new Error(`View mode not found: ${entry.collection}:${mode}`);
+}
+---
+
+{entry.collection === "publication" ? <PublicationTeaser entry={entry} /> : <PublicationPlusTeaser entry={entry} />}

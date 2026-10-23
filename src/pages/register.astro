@@ -1,0 +1,70 @@
+---
+import Base from "@layouts/Base.astro";
+import { getRuntimeBindings } from "@lib/database.ts";
+
+if (getRuntimeBindings().APP_ENV !== "develop") return new Response(null, { status: 404 });
+---
+
+<Base title="Create a local test account">
+  <div class="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-sm">
+    <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">Local development</p>
+    <h1 class="mt-2 text-3xl font-semibold">Create a test account</h1>
+    <form class="mt-6 grid gap-4" data-register-form>
+      <label class="grid gap-1 font-medium">
+        Name
+        <input class="rounded-lg border border-slate-300 px-3 py-2" name="name" required />
+      </label>
+      <label class="grid gap-1 font-medium">
+        Email
+        <input class="rounded-lg border border-slate-300 px-3 py-2" name="email" required type="email" />
+      </label>
+      <label class="grid gap-1 font-medium">
+        Password
+        <input
+          class="rounded-lg border border-slate-300 px-3 py-2"
+          minlength="8"
+          name="password"
+          required
+          type="password"
+        />
+      </label>
+      <p class="text-sm text-red-700" data-auth-error role="alert"></p>
+      <button class="rounded-lg bg-blue-700 px-4 py-3 font-semibold text-white disabled:opacity-60" type="submit">
+        Create account
+      </button>
+    </form>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-register-form]");
+  const errorElement = document.querySelector<HTMLElement>("[data-auth-error]");
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const data = new FormData(form);
+    if (submit) submit.disabled = true;
+    if (errorElement) errorElement.textContent = "";
+
+    const response = await fetch("/api/auth/sign-up/email/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: String(data.get("name")),
+        email: String(data.get("email")),
+        password: String(data.get("password")),
+      }),
+    });
+
+    if (!response.ok) {
+      const result = (await response.json().catch(() => null)) as { message?: string } | null;
+      if (errorElement) errorElement.textContent = result?.message || "Registration failed";
+      if (submit) submit.disabled = false;
+      return;
+    }
+
+    window.location.href = "/account/";
+  });
+</script>

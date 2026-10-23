@@ -1,0 +1,36 @@
+---
+import SignOutButton from "@components/SignOutButton.astro";
+import Base from "@layouts/Base.astro";
+import { getAuthSession } from "@lib/auth.ts";
+
+const session = await getAuthSession(Astro.request);
+if (!session) return Astro.redirect("/login/?returnTo=/account/");
+---
+
+<Base title="Your account">
+  <div class="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
+    <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">Authenticated</p>
+    <h1 class="mt-2 text-3xl font-semibold">{session.user.name}</h1>
+    <dl class="mt-6 grid gap-3">
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Email</dt>
+        <dd>{session.user.email}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-slate-500">Role</dt>
+        <dd>{session.user.role ?? "user"}</dd>
+      </div>
+    </dl>
+    <div class="mt-7 flex flex-wrap gap-3">
+      <a class="rounded-full bg-blue-700 px-4 py-2 text-sm font-semibold text-white" href="/favorites/">
+        My favorites
+      </a>
+      {session.user.role === "admin" && (
+        <a class="rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white" href="/admin/">
+          Administration
+        </a>
+      )}
+      <SignOutButton />
+    </div>
+  </div>
+</Base>

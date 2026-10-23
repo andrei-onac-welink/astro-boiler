@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntry } from "astro:content";
+import PublicationPlusFavoriteButton from "@components/PublicationPlusFavoriteButton.astro";
+import Base from "@layouts/Base.astro";
+import { resolveStrapiMediaUrl } from "@lib/strapi-media.ts";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const publicationPlusEntries = await getCollection("publication-plus");
+  return publicationPlusEntries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const researcher = await getEntry(entry.data.researcher);
+const cover = entry.data.videoCover;
+const coverUrl = cover
+  ? await resolveStrapiMediaUrl({
+      documentId: entry.data.documentId,
+      endpoint: "/api/publications-plus",
+      field: "videoCover",
+      media: cover,
+      status: entry.data.strapiStatus,
+    })
+  : undefined;
+---
+
+<Base description={entry.data.abstract} title={entry.data.title}>
+  <article>
+    <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">Publication Plus</p>
+    <h1 class="mt-2 max-w-4xl text-4xl font-semibold">{entry.data.title}</h1>
+    {researcher && (
+      <p class="mt-3">
+        Researcher:{" "}
+        <a class="font-medium text-blue-700" href={`/researchers/${researcher.data.slug}/`}>
+          {researcher.data.displayName}
+        </a>
+      </p>
+    )}
+    {cover && coverUrl && (
+      <Image
+        alt={cover.alternativeText ?? entry.data.title}
+        class="mt-8 aspect-video w-full max-w-4xl rounded-2xl object-cover"
+        height={720}
+        sizes="(min-width: 960px) 56rem, calc(100vw - 2rem)"
+        src={coverUrl}
+        width={1280}
+        widths={[480, 768, 1024, 1280]}
+      />
+    )}
+    {entry.data.abstract && <p class="mt-6 max-w-3xl text-lg text-slate-700">{entry.data.abstract}</p>}
+    <div class="mt-6">
+      <PublicationPlusFavoriteButton publicationPlusId={entry.id} />
+    </div>
+  </article>
+</Base>

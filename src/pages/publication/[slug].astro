@@ -1,0 +1,129 @@
+---
+import type { PlayerConfig } from "@latest-thinking/lt-player";
+import { getImage, Image } from "astro:assets";
+import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import PublicationFavoriteButton from "@components/PublicationFavoriteButton.astro";
+import PublicationPlayer from "@components/PublicationPlayer.astro";
+import Base from "@layouts/Base.astro";
+import { resolveStrapiMediaUrl } from "@lib/strapi-media.ts";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const publications = await getCollection("publication");
+  const pages = publications.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry } satisfies PublicationPageProps,
+  }));
+  const redirects = publications
+    .filter(
+      (entry) =>
+        entry.data.strapiStatus === "published" &&
+        entry.data.uuid &&
+        entry.data.uuid.toLowerCase() !== entry.data.slug.toLowerCase(),
+    )
+    .map((entry) => ({
+      params: { slug: entry.data.uuid! },
+      props: { redirectTo: `/publication/${entry.data.slug}/` } satisfies PublicationRedirectProps,
+    }));
+
+  return [...pages, ...redirects];
+}
+
+type PublicationPageProps = {
+  entry: CollectionEntry<"publication">;
+};
+
+type PublicationRedirectProps = {
+  redirectTo: string;
+};
+
+const props = Astro.props as PublicationPageProps | PublicationRedirectProps;
+if ("redirectTo" in props) return Astro.redirect(props.redirectTo, 301);
+
+const { entry } = props;
+const researcher = await getEntry(entry.data.researcher);
+const cover = entry.data.videoCover;
+const coverUrl = cover
+  ? await resolveStrapiMediaUrl({
+      documentId: entry.data.documentId,
+      endpoint: "/api/publications",
+      field: "videoCover",
+      media: cover,
+      status: entry.data.strapiStatus,
+    })
+  : undefined;
+const posterUrl = coverUrl
+  ? (
+      await getImage({
+        format: "webp",
+        height: 1200,
+        quality: 90,
+        src: coverUrl,
+        width: 680,
+      })
+    ).src
+  : undefined;
+const canonicalPath = `/publication/${entry.data.slug}/`;
+const canonicalUrl = new URL(canonicalPath, Astro.site ?? Astro.url.origin).toString();
+const player = entry.data.videoUrl
+  ? ({
+      version: 3,
+      layout: "portrait",
+      language: "en",
+      content: {
+        title: entry.data.title,
+        author: researcher?.data.displayName ?? "",
+        sources: [{ src: entry.data.videoUrl, type: "application/x-mpegURL" }],
+        ...(posterUrl ? { poster: posterUrl } : {}),
+        ...(entry.data.videoDuration ? { duration: entry.data.videoDuration } : {}),
+      },
+      controls: {
+        cover: {
+          author: true,
+          title: true,
+          button: { label: "Watch now" },
+        },
+      },
+      capabilities: {
+        share: {
+          canonicalUrl,
+        },
+        speed: { options: [0.75, 1, 1.25, 1.5, 2] },
+      },
+    } as PlayerConfig)
+  : undefined;
+---
+
+<Base canonical={canonicalPath} title={entry.data.title}>
+  <article>
+    <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">Publication</p>
+    <h1 class="mt-2 max-w-4xl text-4xl font-semibold">{entry.data.title}</h1>
+    {researcher && (
+      <p class="mt-3">
+        Researcher:{" "}
+        <a class="font-medium text-blue-700" href={`/researchers/${researcher.data.slug}/`}>
+          {researcher.data.displayName}
+        </a>
+      </p>
+    )}
+    {player ? (
+      <div class="mt-8 aspect-[9/16] w-full max-w-sm overflow-hidden rounded-2xl bg-black shadow-sm">
+        <PublicationPlayer config={player} />
+      </div>
+    ) : cover && coverUrl ? (
+      <Image
+        alt={cover.alternativeText ?? entry.data.title}
+        class="mt-8 aspect-video w-full max-w-4xl rounded-2xl object-cover"
+        height={720}
+        sizes="(min-width: 960px) 56rem, calc(100vw - 2rem)"
+        src={coverUrl}
+        width={1280}
+        widths={[480, 768, 1024, 1280]}
+      />
+    ) : null}
+    <div class="mt-6">
+      <PublicationFavoriteButton publicationId={entry.id} />
+    </div>
+  </article>
+</Base>

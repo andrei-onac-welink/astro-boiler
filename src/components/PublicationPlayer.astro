@@ -1,0 +1,34 @@
+---
+import type { PlayerConfig } from "@latest-thinking/lt-player";
+import "@latest-thinking/lt-player/styles.css";
+
+type Props = {
+  config: PlayerConfig;
+};
+
+const { config } = Astro.props;
+---
+
+<lt-player class="block h-full w-full" data-config={JSON.stringify(config)}></lt-player>
+
+<script>
+  import { createPlayer, type PlayerConfig } from "@latest-thinking/lt-player";
+
+  const mountedPlayers = new WeakSet<HTMLElement>();
+
+  function mountPlayers() {
+    document.querySelectorAll<HTMLElement>("lt-player[data-config]").forEach((host) => {
+      if (mountedPlayers.has(host) || !host.dataset.config) return;
+
+      try {
+        createPlayer(host, JSON.parse(host.dataset.config) as PlayerConfig);
+        mountedPlayers.add(host);
+      } catch (error) {
+        console.error("[lt-player] Unable to mount player", error);
+      }
+    });
+  }
+
+  mountPlayers();
+  document.addEventListener("astro:page-load", mountPlayers);
+</script>

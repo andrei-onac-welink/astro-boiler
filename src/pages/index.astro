@@ -1,6 +1,6 @@
 ---
-import BlocksExternal from "../components/blocks-external/BlocksExternal.astro";
-import Base from "../layouts/Base.astro";
+import BlocksExternal from "@components/blocks-external/BlocksExternal.astro";
+import Base from "@layouts/Base.astro";
 
 export const prerender = true;
 ---
@@ -17,7 +17,14 @@ export const prerender = true;
     ]}
   />
 
-  <section class="mt-12 grid gap-6 md:grid-cols-3">
+  <section class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <article class="rounded-2xl bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Linked collections</h2>
+      <p class="mt-2 text-slate-600">Researchers and Publication Plus demonstrate typed Strapi relationships.</p>
+      <a class="mt-4 inline-block font-medium text-blue-700" href="/publication-plus/">
+        Publication Plus
+      </a>
+    </article>
     <article class="rounded-2xl bg-white p-6 shadow-sm">
       <h2 class="text-xl font-semibold">Typed content</h2>
       <p class="mt-2 text-slate-600">Zod schemas turn upstream CMS responses into explicit build contracts.</p>

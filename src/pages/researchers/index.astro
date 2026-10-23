@@ -1,0 +1,26 @@
+---
+import { getCollection } from "astro:content";
+import { config } from "@config/index.ts";
+import Base from "@layouts/Base.astro";
+
+export const prerender = true;
+const researchers = (await getCollection("researcher")).filter(
+  (entry) => entry.data.strapiStatus === "published" || config.includeDrafts,
+);
+---
+
+<Base title="Researchers">
+  <h1 class="text-4xl font-semibold">Researchers</h1>
+  <ul class="mt-8 grid gap-4 md:grid-cols-2">
+    {researchers.map((entry) => (
+      <li>
+        <a
+          class="w-full block rounded-2xl border border-slate-200 bg-white p-5 text-lg font-semibold shadow-sm"
+          href={`/researchers/${entry.data.slug}/`}
+        >
+          {entry.data.displayName}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

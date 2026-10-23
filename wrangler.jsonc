@@ -1,9 +1,10 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "welink-astro-boilerplate-develop",
+  "name": "astro-boiler",
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-10-19",
   "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
@@ -13,48 +14,45 @@
   "observability": {
     "enabled": true,
   },
-  "vars": {
-    "APP_ENV": "develop",
-    "USE_CONTENT_FIXTURES": "true",
-  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "astro-boiler-develop",
+      "database_id": "b4ca3b08-637e-4e53-879a-9f31c08f9a1a",
+      "migrations_dir": "migrations",
+    },
+  ],
   "env": {
+    // D1 bindings are intentionally not inherited by Wrangler environments.
+    // Add a separate database binding to each environment after local validation.
     "preview": {
-      "name": "welink-astro-boilerplate-preview",
+      "name": "astro-boiler-preview",
+      "keep_vars": true,
       "workers_dev": true,
       "preview_urls": true,
       "assets": {
         "binding": "ASSETS",
         "directory": "./dist",
-      },
-      "vars": {
-        "APP_ENV": "preview",
-        "USE_CONTENT_FIXTURES": "false",
       },
     },
     "staging": {
-      "name": "welink-astro-boilerplate-staging",
+      "name": "astro-boiler-staging",
+      "keep_vars": true,
       "workers_dev": true,
       "preview_urls": true,
       "assets": {
         "binding": "ASSETS",
         "directory": "./dist",
-      },
-      "vars": {
-        "APP_ENV": "staging",
-        "USE_CONTENT_FIXTURES": "false",
       },
     },
     "production": {
-      "name": "welink-astro-boilerplate",
+      "name": "astro-boiler",
+      "keep_vars": true,
       "workers_dev": true,
       "preview_urls": true,
       "assets": {
         "binding": "ASSETS",
         "directory": "./dist",
-      },
-      "vars": {
-        "APP_ENV": "production",
-        "USE_CONTENT_FIXTURES": "false",
       },
     },
   },

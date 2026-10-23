@@ -1,0 +1,53 @@
+---
+import { getEntry } from "astro:content";
+import ViewMode from "@components/view-mode/ViewMode.astro";
+import Base from "@layouts/Base.astro";
+import { getAuthSession } from "@lib/auth.ts";
+import { getDatabase } from "@lib/database.ts";
+
+const session = await getAuthSession(Astro.request);
+if (!session) return Astro.redirect("/login/?returnTo=/favorites/");
+
+const publicationResult = await getDatabase()
+  .prepare('SELECT "publicationId" FROM "publication_favorite" WHERE "userId" = ? ORDER BY "createdAt" DESC')
+  .bind(session.user.id)
+  .all<{ publicationId: string }>();
+const publicationEntries = (
+  await Promise.all(publicationResult.results.map(({ publicationId }) => getEntry("publication", publicationId)))
+).filter((entry) => entry !== undefined);
+
+const publicationPlusResult = await getDatabase()
+  .prepare('SELECT "publicationPlusId" FROM "publication_plus_favorite" WHERE "userId" = ? ORDER BY "createdAt" DESC')
+  .bind(session.user.id)
+  .all<{ publicationPlusId: string }>();
+const publicationPlusEntries = (
+  await Promise.all(
+    publicationPlusResult.results.map(({ publicationPlusId }) => getEntry("publication-plus", publicationPlusId)),
+  )
+).filter((entry) => entry !== undefined);
+---
+
+<Base title="My favorites">
+  <h1 class="text-4xl font-semibold">My favorites</h1>
+  <h2 class="mt-8 text-2xl font-semibold">Publications</h2>
+  {publicationEntries.length > 0 ? (
+    <div class="mt-5 grid gap-6 md:grid-cols-2">
+      {publicationEntries.map((entry) => (
+        <ViewMode entry={entry} mode="teaser" />
+      ))}
+    </div>
+  ) : (
+    <p class="mt-4 text-slate-600">You have not added any Publications yet.</p>
+  )}
+
+  <h2 class="mt-10 text-2xl font-semibold">Publication Plus</h2>
+  {publicationPlusEntries.length > 0 ? (
+    <div class="mt-5 grid gap-6 md:grid-cols-2">
+      {publicationPlusEntries.map((entry) => (
+        <ViewMode entry={entry} mode="teaser" />
+      ))}
+    </div>
+  ) : (
+    <p class="mt-6 text-slate-600">You have not added any Publication Plus entries yet.</p>
+  )}
+</Base>
